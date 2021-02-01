@@ -1,10 +1,15 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
 
 void sort(int *widthArray, int *heightArray, int left, int right);
 void swap(int *arr, int id1, int id2);
-
+int chkNull(FILE *f){
+    if(!f){
+        fprintf(stderr, "Cannot open the file\n");
+        exit(EXIT_FAILURE);
+    }
+    return 1;
+}
 
 int main() {
 
@@ -13,6 +18,7 @@ int main() {
     scanf("%s", filePath);
 
     FILE *f = fopen(filePath, "r");
+    chkNull(f);
 
     int roomWidth, roomHeight;
     fscanf(f, "%d", &roomWidth);
