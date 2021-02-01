@@ -1,69 +1,82 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#define SWAP(x, y, z) (z)=(x), (x)=(y), (y)=(z)
-void prtArr(int *wInfo, int *hInfo, int w);
-void buble_sort(int *lenArr,int *indexArr ,int cnt);
+
+void sort(int *wInfo, int *hInfo, int left, int right);
+void swap(int *arr, int id1, int id2);
 
 
 int main() {
+
     char filePath[100];
-    printf("Input the file path >>\n");
-    //scanf("%s", filePath);
-    stpcpy(filePath, "../input.txt");
+    printf("Input the file path >> ");
+    scanf("%s", filePath);
 
     FILE *f = fopen(filePath, "r");
 
-    int w, h;
-    fscanf(f, "%d", &w);
-    fscanf(f, "%d", &h);
+    int roomWidth, roomHeight;
+    fscanf(f, "%d", &roomWidth);
+    fscanf(f, "%d", &roomHeight);
 
-    int* hInfo = (int *)malloc(sizeof (*hInfo) * w);
-    int* wInfo = (int *)malloc(sizeof (*wInfo) * w);
-    int* posTable = (int *)calloc(w, sizeof(*posTable));
+    int* hArray = (int *)malloc(sizeof (*hArray) * roomWidth); //상자의 높이을 저장할 배열 선언
+    int* wArray = (int *)malloc(sizeof (*wArray) * roomWidth); //상자의 위치를 저장할 배열 선언
 
-    for(int i = 0; i < w; i++){
-        fscanf(f, "%d", &hInfo[i]);
-        wInfo[i] = i;
+    // 상자의 높이와 위치 초기화
+    for(int i = 0; i < roomWidth; i++){
+        fscanf(f, "%d", &hArray[i]);
+        wArray[i] = i;
     }
 
-    buble_sort(hInfo, wInfo, w);
-    prtArr(wInfo, hInfo, w);
-    puts("");
+    // 오름차순으로 상자의 높이 정렬
+    sort(wArray, hArray, 0, roomWidth - 1);
 
-    int maxCntIndex = 0;
-    for(int i = w-1; hInfo[i]>=hInfo[w-1]; i--, maxCntIndex++); //Max값을 갖는 원소 중 가장 작은 index값을 구함;
-    printf("%d\n", w - maxCntIndex);
-    int minIndex = w - maxCntIndex;
-    printf("%d\n", w-maxCntIndex-wInfo[minIndex]);
 
-    free(hInfo);
-    free(wInfo);
-    free(posTable);
+    int cntMaxValue = 0; //배열의 가장 큰 값의 갯수
+    int minIndex = roomWidth; //배열의 가장 큰 값 중에서 가장 작은 index
+    for(int i = roomWidth - 1; hArray[i] >= hArray[roomWidth - 1]; i--){
+        if(minIndex > wArray[i]){
+            minIndex = wArray[i];
+        }
+        cntMaxValue++;
+    }
+
+    //최대 낙하거리 = 방의 높이 - 가장 높은 높이를 갖는 박스들의 수 - 가장 높은 높이를 갖는 박스 중 가장 위에 있는 박스 위치
+    int maxDropDistance = roomWidth - cntMaxValue - minIndex;
+
+    printf("%d\n", maxDropDistance);
+
+    free(hArray);
+    free(wArray);
     fclose(f);
     return 0;
 }
 
+//unstable sort
+void sort(int *wInfo, int *hInfo, int left, int right) {
+    int toLeft, toRight, pivot;
 
-void buble_sort(int *lenArr,int *indexArr ,int cnt){
-    int temp = 0;
-    for(int i = cnt; i >=0; i--){
-        for(int j = 1; j<i; j++){
-            if(lenArr[j]<lenArr[j-1]){
-                SWAP(lenArr[j], lenArr[j-1], temp);
-                SWAP(indexArr[j], indexArr[j-1], temp);
+    if(left < right) {
+        pivot = hInfo[left];
+        toRight = left;
+        toLeft = right + 1;
+        do {
+            do toRight++; while (pivot > hInfo[toRight]);
+            do toLeft--; while (pivot < hInfo[toLeft]);
+            if (toRight < toLeft) {
+                swap(hInfo, toRight, toLeft);
+                swap(wInfo, toRight, toLeft);
             }
-        }
+        } while (toRight < toLeft);
+        swap(hInfo, left, toLeft);
+        swap(wInfo, left, toLeft);
+        sort(wInfo, hInfo, left, toLeft - 1);
+        sort(wInfo, hInfo, toLeft + 1, right);
     }
 }
 
-void prtArr(int *wInfo, int *hInfo, int w) {
-    for(int i = 0; i<w ; i++){
-        printf("%3d", hInfo[i]);
-    }
-    puts("");
-
-    for(int i = 0; i<w ; i++){
-        printf("%3d", wInfo[i]);
-    }
+void swap(int *arr, int id1, int id2) {
+    if (id1 == id2) return;
+    arr[id1] ^= arr[id2];
+    arr[id2] ^= arr[id1];
+    arr[id1] ^= arr[id2];
 }
