@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-void sort(int *wInfo, int *hInfo, int left, int right);
+void sort(int *widthArray, int *heightArray, int left, int right);
 void swap(int *arr, int id1, int id2);
 
 
@@ -33,6 +33,8 @@ int main() {
 
     int cntMaxValue = 0; //배열의 가장 큰 값의 갯수
     int minIndex = roomWidth; //배열의 가장 큰 값 중에서 가장 작은 index
+
+    //배열의 값 중 가장 큰 값을 갖는 원소의 갯수와 가장 큰 값을 갖는 원소 중 가장 작은 원소의 index를 구함
     for(int i = roomWidth - 1; hArray[i] >= hArray[roomWidth - 1]; i--){
         if(minIndex > wArray[i]){
             minIndex = wArray[i];
@@ -52,25 +54,25 @@ int main() {
 }
 
 //unstable sort
-void sort(int *wInfo, int *hInfo, int left, int right) {
+void sort(int *widthArray, int *heightArray, int left, int right) {
     int toLeft, toRight, pivot;
 
     if(left < right) {
-        pivot = hInfo[left];
+        pivot = heightArray[left];
         toRight = left;
         toLeft = right + 1;
         do {
-            do toRight++; while (pivot > hInfo[toRight]);
-            do toLeft--; while (pivot < hInfo[toLeft]);
+            do toRight++; while (pivot > heightArray[toRight]);
+            do toLeft--; while (pivot < heightArray[toLeft]);
             if (toRight < toLeft) {
-                swap(hInfo, toRight, toLeft);
-                swap(wInfo, toRight, toLeft);
+                swap(heightArray, toRight, toLeft);
+                swap(widthArray, toRight, toLeft);
             }
         } while (toRight < toLeft);
-        swap(hInfo, left, toLeft);
-        swap(wInfo, left, toLeft);
-        sort(wInfo, hInfo, left, toLeft - 1);
-        sort(wInfo, hInfo, toLeft + 1, right);
+        swap(heightArray, left, toLeft);
+        swap(widthArray, left, toLeft);
+        sort(widthArray, heightArray, left, toLeft - 1);
+        sort(widthArray, heightArray, toLeft + 1, right);
     }
 }
 
