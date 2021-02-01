@@ -37,7 +37,7 @@ int main() {
     sort(wArray, hArray, 0, roomWidth - 1);
 
 
-    int cntMaxValue = 0; //배열의 가장 큰 값의 갯수
+    int cntMaxValue = 0; //배열의 가장 큰 값의 개수
     int minIndex = roomWidth; //배열의 가장 큰 값 중에서 가장 작은 index
 
     //배열의 값 중 가장 큰 값을 갖는 원소의 갯수와 가장 큰 값을 갖는 원소 중 가장 작은 원소의 index를 구함
